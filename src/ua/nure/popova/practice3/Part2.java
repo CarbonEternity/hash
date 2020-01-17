@@ -32,14 +32,32 @@ public class Part2 {
     public static String convert(String input){
         String mas = separate(input, " ");
         String[] separatedArray = toArray(mas);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Min: "+ findMin(separatedArray))
+                .append(LINE_SEPARATOR)
+                .append("Max: "+ findMax(separatedArray));
+
+        return sb.toString().trim();
+
+        //Min: I, s, m
+        //Max: younger, anybody, assured, changed
+    }
+
+    private static String findMin(String[] separatedArray) {
         int minLength = findMinimumLength(separatedArray);
-        System.out.println("minimum length = "+minLength);
-        String mins = createMinMas(separatedArray, minLength);
+        String mins = createNeedMas(separatedArray, minLength);
         String unical = deleteTheSame(mins);
         String res = separate(unical.trim(), ", ");
-        String output = "Min: "+ res;
-        return output;
-        //Min: I, s, m
+        return res;
+    }
+
+    private static String findMax(String[] separatedArray) {
+        int maxLength = findMaximumLength(separatedArray);
+        String mins = createNeedMas(separatedArray, maxLength);
+        String unical = deleteTheSame(mins);
+        String res = separate(unical.trim(), ", ");
+        return res;
     }
 
     private static String separate(String input, String replace) {
@@ -58,6 +76,16 @@ public class Part2 {
         return input.split("\\s");
     }
 
+    private static int findMaximumLength (String [] input){
+        int tmp=input[1].length();
+        for (String s : input) {
+            if (s.length() > 0 && s.length() > tmp) {
+                tmp = s.length();
+            }
+        }
+        return tmp;
+    }
+
     private static int findMinimumLength (String [] input){
         int tmp=input[1].length();
         for (String s : input) {
@@ -68,7 +96,7 @@ public class Part2 {
         return tmp;
     }
 
-    private static String createMinMas(String[] input, int minLength){
+    private static String createNeedMas(String[] input, int minLength){
         StringBuilder sb = new StringBuilder();
         for (String s : input) {
             if (s.length() == minLength) {
@@ -80,17 +108,17 @@ public class Part2 {
 
     private static String deleteTheSame(String input) {
         String[] res = input.split(" ");
-        ;
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < res.length; i++) {
-            String tmp = res[i];
+            String word = res[i];
             for (int j = 1; j < res.length; j++) {
-                if (res[j].equals(tmp)) {
+                if (res[j].equals(word)) {
                     res[j] = "";
                 }
             }
-            if (!tmp.isEmpty()) {
-                sb.append(tmp).append(" ");
+            if (!word.isEmpty()) {
+                sb.append(word).append(" ");
             }
         }
         return sb.toString();
