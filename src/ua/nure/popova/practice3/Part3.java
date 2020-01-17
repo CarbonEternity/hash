@@ -43,8 +43,8 @@ public class Part3 {
     }
 
     public static String transformAndSafeLines(String input) {
-        String email = "(?mU)(.+)$";
-        Pattern p = Pattern.compile(email);
+        String regex = "(?mU)(.+)$";
+        Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(input);
         StringBuilder sb = new StringBuilder();
         while (m.find()) {
@@ -69,10 +69,13 @@ public class Part3 {
             String[] words = toArrayWords(lines[i]);
 
             for (int j = 0; j < words.length; j++) {
-
+                if(i==0 && j==0){
+                    sb.append(words[j].toLowerCase()).append(" ");
+                    continue;
+                }
                 if (words[j].length() >= 3) {
-                   sb.append(words[j].substring(0, 1).toUpperCase())
-                           .append(words[j].substring(1)).append(" ");
+                    sb.append(words[j].substring(0, 1).toUpperCase())
+                            .append(words[j].substring(1)).append(" ");
                 }else {
                     sb.append(words[j]).append(" ");
                 }

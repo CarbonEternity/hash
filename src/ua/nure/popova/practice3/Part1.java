@@ -25,12 +25,81 @@ public class Part1 {
     public static void main(String[] args) {
         String readed = readFile("part1.txt");
         System.out.println(readed);
-        System.out.println("---------------------------------");
+
+        System.out.println("---------------convert 1------------------");
+        System.out.println(convert1(readed));
+
+        System.out.println("---------------convert 2------------------");
+        System.out.println(convert2(readed));
+
+        System.out.println("---------------convert 3------------------");
         String mas = separateComma(readed);
         System.out.println(convert3(mas));
-        System.out.println("---------------------------------");
+
+        System.out.println("---------------convert 4------------------");
         System.out.println(convert4(readed));
-        System.out.println("---------------------------------");
+        System.out.println("------------------------------------------");
+    }
+
+    public static String convert1(String mas) {
+        String[] lines = mas.split(LINE_SEPARATOR);
+        return buildEmailsWithSurnames(lines);
+    }
+
+    public static String convert2(String mas) {
+        String[] lines = mas.split(LINE_SEPARATOR);
+        return buildSurnamesAndEmailWithBrackets(lines);
+    }
+
+    public static String buildSurnamesAndEmailWithBrackets(String[] inputs) {
+        String email = "(?mU)^(\\w+);(\\w+)(\\s)(\\w+);((.+)@(.+))$";
+
+      /*  Group 1.		ivanov
+        Group 2.		Ivan
+        Group 3.
+        Group 4.		Ivanov
+        Group 5.		ivanov@mail.com
+        Group 6.		ivanov
+        Group 7.    	mail.com*/
+
+        Pattern p = Pattern.compile(email);
+        StringBuilder sb = new StringBuilder();
+
+        for (String input : inputs) {
+            Matcher m = p.matcher(input);
+
+            while (m.find()) {
+                sb.append(m.group(4)).append(" ")
+                        .append(m.group(2))
+                        .append(" (email: ")
+                        .append(m.group(5))
+                        .append(")").append(LINE_SEPARATOR);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String buildEmailsWithSurnames(String[] inputs) {
+        String email = "(?mU)(\\w+);(.+);((.+)@(.+))$";
+
+    /*  Group 1.		ivanov
+        Group 2.		Ivan Ivanov
+        Group 3.        ivanov@mail.com
+        Group 4.		ivanov
+        Group 5.		mail.com
+        */
+
+        Pattern p = Pattern.compile(email);
+        StringBuilder sb = new StringBuilder();
+
+        for (String input : inputs) {
+            Matcher m = p.matcher(input);
+
+            while (m.find()) {
+                sb.append(m.group(1)).append(": ").append(m.group(3)).append(LINE_SEPARATOR);
+            }
+        }
+        return sb.toString();
     }
 
     public static String convert3(String mas) {
@@ -40,13 +109,6 @@ public class Part1 {
         return values.trim();
     }
 
-
-    private static int random(){
-         int min = 1000;
-         int max = 9999;
-         max -= min;
-         return (int) (Math.random() * ++max) + min;
-    }
 
     public static String convert4(String input) {
         String[] lines = input.split(LINE_SEPARATOR);
@@ -60,6 +122,13 @@ public class Part1 {
         }
 
         return sb.toString().trim();
+    }
+
+    private static int random(){
+        int min = 1000;
+        int max = 9999;
+        max -= min;
+        return (int) (Math.random() * ++max) + min;
     }
 
     private static String addComma(String str) {
@@ -127,7 +196,6 @@ public class Part1 {
     }
 
     public static String cutWithoutDomens(String input) {
-//        String email = "(?mU)^(\\S+;)(\\S+)(\\s+)(.+;)(.+)(@.+)";
         String email = "(?mU)^(\\S+)(\\s+)(\\S+)(.+)$";
         Pattern p = Pattern.compile(email);
         Matcher m = p.matcher(input);
